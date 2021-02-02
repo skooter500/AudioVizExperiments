@@ -17,18 +17,28 @@ float[] lerpedBuffer;
 float x = 0;
 
 int frameSize = 512;
+float halfWidth;
+float drawable;
+float halfDrawable;
 
 void setup()
 {
-  size(512, 512);
+  //size(1000, 512);
+  fullScreen(P3D);
   colorMode(HSB);
   minim = new Minim(this);
   player = minim.loadFile("Etherwood.mp3", frameSize);
+  smooth();
+  frameRate(60);
   //player.play();
   //ai = minim.getLineIn(Minim.MONO, width, 44100, 16);
   buffer = player.left;
 
   lerpedBuffer = new float[buffer.size()];
+  drawable = width * 0.6f;
+  halfDrawable = drawable / 2;
+  
+  halfWidth = width / 2;
 }
 
 int which = 0;
@@ -40,53 +50,61 @@ void draw()
   
   if (which == 1)
   {
-    strokeWeight(1);
+    strokeWeight(2);
     for (int i = 0; i < buffer.size(); i ++)
     {
       float sample = buffer.get(i) * halfH;
       stroke(map(i, 0, buffer.size(), 0, 255), 255, 255);
       //line(i, halfH + sample, i, halfH - sample); 
 
-      lerpedBuffer[i] = lerp(lerpedBuffer[i], buffer.get(i), 0.1f);
+      lerpedBuffer[i] = lerp(lerpedBuffer[i], buffer.get(i), 0.01f);
 
-      sample = lerpedBuffer[i] * width * 2;    
+      sample = lerpedBuffer[i] * width * 6;    
       stroke(map(i, 0, buffer.size(), 0, 255), 255, 255);
-      line(i, height / 2 - sample, i, height/2 + sample); 
+      float x = (int) map(i, 0, buffer.size(), halfWidth - halfDrawable, halfWidth + halfDrawable);
+      line(x, height / 2 - sample, x, height/2 + sample); 
     }
   }
   if (which == 0)
   {
-    strokeWeight(1);
+    strokeWeight(2);
     for (int i = 0; i < buffer.size(); i ++)
     {
       float sample = buffer.get(i) * halfH;
       stroke(map(i, 0, buffer.size(), 0, 255), 255, 255);
       //line(i, halfH + sample, i, halfH - sample); 
 
-      lerpedBuffer[i] = lerp(lerpedBuffer[i], buffer.get(i), 0.1f);
+      lerpedBuffer[i] = lerp(lerpedBuffer[i], buffer.get(i), 0.01f);
 
-      sample = lerpedBuffer[i] * width * 2;    
+      sample = lerpedBuffer[i] * width * 6;    
       stroke(map(i, 0, buffer.size(), 0, 255), 255, 255);
-      line(i, height / 2 - sample, height/2 + sample, i); 
+      float x = (int) map(i, 0, buffer.size(), halfWidth - halfDrawable, halfWidth + halfDrawable);
+      float y = (int) map(i, 0, buffer.size(), 0, height);
+      line(x, height / 2 - sample, width/2 + sample, y); 
     }
   }
   
   if (which == 2)
   {
+    strokeWeight(2);
     for (int i = 0; i < buffer.size(); i ++)
     {
       float sample = buffer.get(i) * halfH;
       stroke(map(i, 0, buffer.size(), 0, 255), 255, 255);
       //line(i, halfH + sample, i, halfH - sample); 
 
-      lerpedBuffer[i] = lerp(lerpedBuffer[i], buffer.get(i), 0.1f);
+      lerpedBuffer[i] = lerp(lerpedBuffer[i], buffer.get(i), 0.01f);
 
-      sample = lerpedBuffer[i] * width * 2;    
+      sample = lerpedBuffer[i] * width * 6;    
       stroke(map(i, 0, buffer.size(), 0, 255), 255, 255);
-      line(0, i, sample, i); 
-      line(width, i, width - sample, i); 
-      line(i, 0, i, sample); 
-      line(i, height, i, height - sample);
+      
+      float x = map(i, 0, buffer.size(), 0, width);
+      float y = map(i, 0, buffer.size(), 0, height);
+          
+      line(0, y, sample, y); 
+      line(width, y, width - sample, y); 
+      line(x, 0, x, sample); 
+      line(x, height, x, height - sample);
     }
   }
 
