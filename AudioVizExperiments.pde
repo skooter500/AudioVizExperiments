@@ -35,18 +35,28 @@ void setup()
   buffer = player.left;
 
   lerpedBuffer = new float[buffer.size()];
-  drawable = width * 0.6f;
+  drawable = width;
   halfDrawable = drawable / 2;
   
   halfWidth = width / 2;
 }
 
 int which = 0;
+float offset = 0;
 
 void draw()
 {
   background(0);
   float halfH = height / 2;
+  
+  float sum = 0;
+  for (int i = 0; i < buffer.size(); i ++)
+  {
+    sum += abs(buffer.get(i));
+  }
+  float average = sum / buffer.size();
+  lerpedAverage = lerp(lerpedAverage, average, 0.1f);
+
   
   if (which == 1)
   {
@@ -57,7 +67,7 @@ void draw()
       stroke(map(i, 0, buffer.size(), 0, 255), 255, 255);
       //line(i, halfH + sample, i, halfH - sample); 
 
-      lerpedBuffer[i] = lerp(lerpedBuffer[i], buffer.get(i), 0.01f);
+      lerpedBuffer[i] = lerp(lerpedBuffer[i], buffer.get(i), 0.02f);
 
       sample = lerpedBuffer[i] * width * 6;    
       stroke(map(i, 0, buffer.size(), 0, 255), 255, 255);
@@ -77,7 +87,17 @@ void draw()
       lerpedBuffer[i] = lerp(lerpedBuffer[i], buffer.get(i), 0.01f);
 
       sample = lerpedBuffer[i] * width * 6;    
-      stroke(map(i, 0, buffer.size(), 0, 255), 255, 255);
+      if (i < buffer.size()/2)
+      {
+        float c = map((i+offset) % buffer.size(), 0, buffer.size()/2, 0, 127) % 255; 
+        stroke(c, 255, 255);
+      }
+      else
+      {
+        float c = map((abs(i-offset)) % buffer.size(), buffer.size(), buffer.size()/2, 255, 128);         
+        stroke(c, 255, 255);
+      }
+      //offset += lerpedAverage * 0.01f;
       float x = (int) map(i, 0, buffer.size(), halfWidth - halfDrawable, halfWidth + halfDrawable);
       float y = (int) map(i, 0, buffer.size(), 0, height);
       line(x, height / 2 - sample, width/2 + sample, y); 
@@ -108,16 +128,8 @@ void draw()
     }
   }
 
-  float sum = 0;
-  for (int i = 0; i < buffer.size(); i ++)
-  {
-    sum += abs(buffer.get(i));
-  }
+  
 
-  noStroke();
-  fill(map(lerpedAverage, 0, 1, 0, 255), 255, 255);
-  float average = sum / buffer.size();
-  lerpedAverage = lerp(lerpedAverage, average, 0.1f);
   
   if (which == 3)
   {
