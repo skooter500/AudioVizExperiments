@@ -31,8 +31,8 @@ void setup()
   smooth();
   frameRate(60);
   //player.play();
-  //ai = minim.getLineIn(Minim.MONO, width, 44100, 16);
-  buffer = player.left;
+  ai = minim.getLineIn(Minim.MONO, width, 44100, 16);
+  buffer = ai.mix;
 
   lerpedBuffer = new float[buffer.size()];
   drawable = width;
